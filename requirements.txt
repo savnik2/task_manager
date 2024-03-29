@@ -1,0 +1,17 @@
+SQLAlchemy==2.0.29
+fastapi==0.100.1
+SQLAlchemy-Utils==0.41.2
+psycopg2-binary==2.9.6
+python-dotenv==1.0.0
+asyncpg==0.28.0
+alembic==1.11.1
+pydantic==2.1.1
+psycopg2-binary==2.9.6
+uvicorn==0.23.1
+gunicorn==21.2.0
+email-validator==2.0.0.post2
+python-dotenv==1.0.0
+alembic==1.11.1
+python-multipart==0.0.6
+
+python-jose==3.3.0
