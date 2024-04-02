@@ -40,8 +40,11 @@ class SQLAlchemyRepository(BaseRepository):
         await self.db.commit()
 
     async def get(self, data: dict):
-        query = select(self.model).where(**data)
-        return await self.db.fetch_all(query)
+        query = select(self.model).where(
+            *[getattr(self.model, key) == value for key, value in data.items()])
+        result = await self.db.execute(query)
+
+        return result.scalars().all()
 
     async def updating(self, user_id: int, values: dict):
         query = update(self.model).where(self.model.id == user_id).values(**values)
