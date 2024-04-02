@@ -4,7 +4,7 @@ from typing import Annotated
 import utils.security as auth_security
 from jose import JWTError
 
-async def get_current_user(access_token: str =  Header(default=None), user_service: UserService = Depends(), executor_service: ExecutorService = Depends()):
+async def get_current_user(access_token: str =  Header(default=None), user_service: UserService = Depends()):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Вы не авторизованы",
@@ -19,10 +19,7 @@ async def get_current_user(access_token: str =  Header(default=None), user_servi
         user_id = int(payload.get("sub"))
         if user_id is None:
             raise credentials_exception
-        if payload.get("role") == "executor":
-            user = await executor_service.current_executor(user_id)
-        elif payload.get("role") == "client":
-            user = await user_service.current_user(user_id)
+        user = await user_service.current_user(user_id)
         if user is None:
             raise credentials_exception
         return user
@@ -30,4 +27,4 @@ async def get_current_user(access_token: str =  Header(default=None), user_servi
         raise credentials_exception
 
 
-CurrentUser = Annotated[int, Depends(get_current_user)]
+CurrentUser = Annotated[Depends(get_current_user)]
