@@ -22,3 +22,10 @@ class ProjectService:
         )
 
         return await self.project_repo.create(project_data.model_dump())
+
+    async def get_project_with_tasks(
+            self,
+            data,
+    ):
+
+        return await self.project_repo.get_project_with_tasks(data)

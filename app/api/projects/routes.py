@@ -13,7 +13,7 @@ router = APIRouter(
     )
 
 
-@router.post('/create-project')
+@router.post('/create')
 async def create_project(user: CurrentUser,
                          project_data: CreateProject,
                          project_service: ProjectService = Depends(),
@@ -22,3 +22,11 @@ async def create_project(user: CurrentUser,
         user.id,
         project_data
     )
+
+
+@router.get('/list')
+async def get_projects(user: CurrentUser,
+                        project_service: ProjectService = Depends(),
+                        ):
+
+    return await project_service.get_project_with_tasks({"user_id":user.id})

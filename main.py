@@ -1,22 +1,24 @@
 import uvicorn
 from fastapi import FastAPI
 import app.api.users.routes as users_router
-import app.api.projects as project_router
+import app.api.projects.routes as project_router
+import app.api.tasks.routes as task_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
 
 
 app = FastAPI(
-    title = 'Tasks Manager'
+    title = 'Tasks Manager',
 )
 
 app.include_router(users_router.router)
 app.include_router(project_router.router)
+app.include_router(task_router.router)
 
 
 origins = [
-    "http://127.0.0.1:8000/"
+    "http://127.0.0.1:8000/",
 ]
 
 app.add_middleware(

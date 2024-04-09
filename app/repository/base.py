@@ -29,7 +29,8 @@ class SQLAlchemyRepository(BaseRepository):
         self.db = db
 
     async def create(
-            self, values,
+            self,
+            values: dict,
                      ):
         query = self.model(**values)
         self.db.add(query)
@@ -38,13 +39,15 @@ class SQLAlchemyRepository(BaseRepository):
         return query
 
     async def delete(
-            self, values: dict,
+            self,
+            values: dict,
                      ):
         await self.db.delete(self.model(**values))
         await self.db.commit()
 
     async def get(
-            self, data: dict,
+            self,
+            data: dict,
                   ):
         query = select(self.model).where(
             *[getattr(self.model, key) == value for key, value in data.items()])
