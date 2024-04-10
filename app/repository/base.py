@@ -55,6 +55,17 @@ class SQLAlchemyRepository(BaseRepository):
 
         return result.scalars().first()
 
+    async def list(
+            self,
+            data: dict,
+
+    ):
+        query = select(self.model).where(
+            *[getattr(self.model, key) == value for key, value in data.items()])
+        result = await self.db.execute(query)
+
+        return result.scalars().all()
+
     async def updating(
             self,
             user_id: int,

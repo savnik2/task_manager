@@ -18,4 +18,4 @@ class ProjectRepository(SQLAlchemyRepository):
                  options(selectinload(self.model.task)))
         result = await self.db.execute(query)
 
-        return result.scalars().first()
+        return result.scalars().all()
