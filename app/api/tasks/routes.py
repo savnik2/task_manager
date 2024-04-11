@@ -14,10 +14,20 @@ router = APIRouter(
 @router.post('/create')
 async def create_project(user: CurrentUser,
                          project_data: CreateTask,
-                         project_service: TaskService = Depends(),
+                         task_service: TaskService = Depends(),
                          ):
-    return await project_service.create_task(
+    return await task_service.create_task(
         user.id,
         project_data,
     )
 
+@router.post('/archived-task/{task_id}')
+async def archived_task(user: CurrentUser,
+                        task_id: int,
+                        status: str,
+                        task_service: TaskService = Depends(),
+                        ):
+    return await task_service.archived_task(
+        task_id,
+        status,
+    )

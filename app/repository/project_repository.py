@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.models.users import Projects
+from app.models.models import Projects
 from app.repository.base import SQLAlchemyRepository
 
 
@@ -19,3 +19,6 @@ class ProjectRepository(SQLAlchemyRepository):
         result = await self.db.execute(query)
 
         return result.scalars().all()
+
+
+

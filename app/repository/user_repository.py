@@ -1,11 +1,6 @@
 from app.repository.base import SQLAlchemyRepository
-from app.models.users import Users, Projects, Tasks
+from app.models.models import Users
 
 
 class UserRepository(SQLAlchemyRepository):
     model = Users
-
-
-
-
-

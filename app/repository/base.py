@@ -17,6 +17,11 @@ class BaseRepository(ABC):
     async def get(self, *args, **kwargs):
         raise NotImplementedError
 
+
+    @abstractmethod
+    async def list(self, *args, **kwargs):
+        raise NotImplementedError
+
     @abstractmethod
     async def updating(self, *args, **kwargs):
         raise NotImplementedError
@@ -47,7 +52,7 @@ class SQLAlchemyRepository(BaseRepository):
 
     async def get(
             self,
-            data: dict,
+            **data,
                   ):
         query = select(self.model).where(
             *[getattr(self.model, key) == value for key, value in data.items()])

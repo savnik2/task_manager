@@ -12,7 +12,7 @@ class UserService:
     async def sign_up(
             self, user_data: UserCreate,
     ):
-        exists_user = await self.user_repo.get({"email": user_data.email})
+        exists_user = await self.user_repo.get(email= user_data.email)
         if exists_user:
             raise HTTPException(
                 status_code=400,
@@ -30,7 +30,7 @@ class UserService:
     async def authentification(
             self, user_data: UserCreate,
     ):
-        user = await self.user_repo.get({"email": user_data.email})
+        user = await self.user_repo.get(email=user_data.email)
 
         if user is None:
             raise  HTTPException(
@@ -52,7 +52,7 @@ class UserService:
     async def current_user(
             self, user_id,
     ):
-        user = await self.user_repo.get({"id": user_id})
+        user = await self.user_repo.get(id= user_id)
         if user is None:
             raise HTTPException(status_code=400, detail="Пользователь не найден")
         return user
