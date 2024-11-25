@@ -18,7 +18,7 @@ class ProjectService:
 
         project_data = ProjectInDB(
             **project_data.model_dump(),
-            user_id=user_id,
+            owner_id=user_id,
         )
 
         return await self.project_repo.create(project_data.model_dump())

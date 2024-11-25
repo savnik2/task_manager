@@ -5,8 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from app.core.config import DBHOST, DBPASSWORD, DBPORT, DBNAME, DBUSER
-
+from app.core.config import settings
 from app.models.base import Base
 from app.models.models import *
 
@@ -15,11 +14,7 @@ from app.models.models import *
 config = context.config
 
 section = config.config_ini_section
-config.set_section_option(section, 'HOST', DBHOST)
-config.set_section_option(section, 'PASSWORD', DBPASSWORD)
-config.set_section_option(section, 'PORT', DBPORT)
-config.set_section_option(section, 'DBNAME', DBNAME)
-config.set_section_option(section, 'USER', DBUSER)
+config.set_section_option(section, 'DBAPI', settings.DBAPI)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

@@ -4,19 +4,15 @@ from sqlalchemy.orm import sessionmaker
 from typing import Annotated
 from fastapi import Depends
 
-from app.core.config import DBNAME, DBPORT, DBUSER, DBPASSWORD, DBHOST
-
+from app.core.config import settings
 
 SQLALCHEMY_DATABASE_URL = (
-    f"postgresql+asyncpg://{DBUSER}:{DBPASSWORD}@{DBHOST}:{DBPORT}/{DBNAME}"
+    f"postgresql+asyncpg://{settings.DBAPI}"
 )
-
 
 SYNC_SQLALCHEMY_DATABASE_URL = (
-    f"postgresql://{DBUSER}:{DBPASSWORD}@{DBHOST}:{DBPORT}/{DBNAME}"
+    f"postgresql://{settings.DBAPI}"
 )
-
-
 
 engine = create_async_engine(SQLALCHEMY_DATABASE_URL, echo=True)
 
@@ -35,9 +31,9 @@ SyncSessionLocal = sessionmaker(
 )
 
 
-
 async def get_db() -> AsyncSession:
     async with SessionLocal() as session:
         yield session
+
 
 DBSession = Annotated[AsyncSession, Depends(get_db)]

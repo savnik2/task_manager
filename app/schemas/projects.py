@@ -6,4 +6,4 @@ class CreateProject(BaseModel):
 
 
 class ProjectInDB(CreateProject):
-    user_id: int
+    owner_id: int
