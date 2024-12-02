@@ -6,18 +6,14 @@ import app.api.tasks.tasks_routes as task_router
 import app.api.groups.groups_routes as group_router
 from fastapi.middleware.cors import CORSMiddleware
 
-
-
-
 app = FastAPI(
-    title = 'Tasks Manager',
+    title='Tasks Manager',
 )
 
 app.include_router(users_router.router)
 app.include_router(project_router.router)
 app.include_router(task_router.router)
 app.include_router(group_router.router)
-
 
 origins = [
     "http://127.0.0.1:8000/",
@@ -30,7 +26,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 if __name__ == '__main__':
     uvicorn.run(

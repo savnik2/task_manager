@@ -5,11 +5,8 @@ from app.schemas.projects import CreateProject
 from app.services.project_service import ProjectService
 
 router = APIRouter(
-
     tags=['project'],
-
     prefix='/projects',
-
     )
 
 

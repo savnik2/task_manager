@@ -15,10 +15,11 @@ router = APIRouter(
 
 @router.post('/create',
              summary='Создание групп')
-async def create_group(user: CurrentUser,
-                       group_data: CreateGroup,
-                       group_service: GroupService = Depends(),
-                       ):
+async def create_group(
+        user: CurrentUser,
+        group_data: CreateGroup,
+        group_service: GroupService = Depends(),
+):
     return await group_service.create_group(
         user.id,
         group_data,

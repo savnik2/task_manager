@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import jwt
 
 from app.core.config import settings
+from app.schemas.users import UserData
 
 
 def get_random_string(length=12):
@@ -10,8 +11,8 @@ def get_random_string(length=12):
 
 
 def hash_password(
-    password: str,
-    salt: str = None,
+        password: str,
+        salt: str = None,
 ):
     if salt is None:
         salt = get_random_string()
@@ -24,23 +25,28 @@ def hash_password(
     return enc.hex()
 
 
-def create_db_password(password):
+def create_db_password(
+        password
+):
     salt = get_random_string()
     hashed_password = hash_password(password, salt)
     new_password = f"{salt}${hashed_password}"
     return new_password
 
 
-def validate_password(password: str, hashed_password: str):
+def validate_password(
+        password: str,
+        hashed_password: str
+):
     salt, hashed = hashed_password.split("$")
     return hash_password(password, salt) == hashed
 
 
 def encode_jwt(
-    payload: dict,
-    private_key: str = settings.auth_jwt.private_key_path.read_text(),
-    expire_minutes: int = settings.auth_jwt.access_token_expire_minutes,
-    algorithm: str = settings.auth_jwt.algorithm,
+        payload: dict,
+        expire_minutes: int,
+        private_key: str = settings.auth_jwt.private_key_path.read_text(),
+        algorithm: str = settings.auth_jwt.algorithm,
 ):
     now = datetime.utcnow()
     expire = now + timedelta(minutes=expire_minutes)
@@ -59,9 +65,9 @@ def encode_jwt(
 
 
 def decode_jwt(
-    token: str | bytes,
-    public_key: str = settings.auth_jwt.public_key_path.read_text(),
-    algorithm: str = settings.auth_jwt.algorithm,
+        token: str | bytes,
+        public_key: str = settings.auth_jwt.public_key_path.read_text(),
+        algorithm: str = settings.auth_jwt.algorithm,
 ):
     decoded = jwt.decode(
         token,
@@ -70,3 +76,30 @@ def decode_jwt(
     )
 
     return decoded
+
+
+def create_access(
+        user: UserData,
+):
+    payload = {
+        'sub': user.id,
+        'email': user.email,
+        'type': 'access'
+    }
+    return encode_jwt(
+        payload,
+        expire_minutes=settings.auth_jwt.access_token_expire_minutes,
+    )
+
+
+def create_refresh(
+        user: UserData,
+):
+    payload = {
+        'sub': user.id,
+        'type': 'refresh'
+    }
+    return encode_jwt(
+        payload,
+        expire_minutes=settings.auth_jwt.refresh_token_expire_minutes,
+    )

@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException
 import app.core.security as auth_security
 
 from app.repository.user_repository import UserRepository
-from app.schemas.users import UserCreate, TokenInfo
+from app.schemas.users import UserCreate, TokenInfo, UserAuth, UserData
 
 
 class UserService:
@@ -22,17 +22,17 @@ class UserService:
         user_data.password = auth_security.create_db_password(user_data.password)
         user_dict = user_data.model_dump()
         user = await self.user_repo.create(user_dict)
-        access_token = auth_security.encode_jwt(
-            {'sub': str(user.id), 'email': user.email}
-        )
+        access_token = auth_security.create_access(user)
+        refresh_token = auth_security.create_refresh(user)
 
         return TokenInfo(
-            access_token=access_token
+            access_token=access_token,
+            refresh_token=refresh_token,
         )
 
-    async def authentification(
+    async def auth(
             self,
-            user_data
+            user_data: UserAuth
     ):
         user = await self.user_repo.get(email=user_data.username)
 
@@ -43,22 +43,36 @@ class UserService:
             )
 
         if not auth_security.validate_password(
-                password=user_data.password, hashed_password=user.password
+                password=user_data.password,
+                hashed_password=user.password,
         ):
             raise HTTPException(
                 status_code=400,
                 detail="Wrong email or password",
             )
 
-        access_token = auth_security.encode_jwt({"sub": str(user.id), "email": user.email})
+        access_token = auth_security.create_access(user)
+        refresh_token = auth_security.create_refresh(user)
         return TokenInfo(
-            access_token=access_token
+            access_token=access_token,
+            refresh_token=refresh_token,
         )
 
     async def current_user(
-            self, user_id,
+            self,
+            user_id,
     ):
         user = await self.user_repo.get(id=user_id)
         if user is None:
             raise HTTPException(status_code=400, detail="Пользователь не найден")
         return user
+
+    async def refresh_user(
+            self,
+            user: UserData,
+    ):
+        access_token = auth_security.create_access(user)
+
+        return TokenInfo(
+            access_token=access_token,
+        )
